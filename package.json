@@ -1,0 +1,14 @@
+{
+  "name": "n-high-auth",
+  "version": "1.0.0",
+  "description": "Firebase applicaion for N highschool Auth.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "sifue",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^6.0.2"
+  }
+}
