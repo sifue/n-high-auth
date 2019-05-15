@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Firebase Hosting</title>
+    <title>N高生証明bot</title>
 
     <!-- update the version number as needed -->
     <script defer src="/__/firebase/6.0.2/firebase-app.js"></script>
@@ -15,92 +15,115 @@
     <!-- initialize the SDK after all desired features are loaded -->
     <script defer src="/__/firebase/init.js"></script>
 
-    <style media="screen">
-      body { background: #ECEFF1; color: rgba(0,0,0,0.87); font-family: Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 0; }
-      #message { background: white; max-width: 360px; margin: 100px auto 16px; padding: 32px 24px; border-radius: 3px; }
-      #message h2 { color: #ffa100; font-weight: bold; font-size: 16px; margin: 0 0 8px; }
-      #message h1 { font-size: 22px; font-weight: 300; color: rgba(0,0,0,0.6); margin: 0 0 16px;}
-      #message p { line-height: 140%; margin: 16px 0 24px; font-size: 14px; }
-      #message a { display: block; text-align: center; background: #039be5; text-transform: uppercase; text-decoration: none; color: white; padding: 16px; border-radius: 4px; }
-      #message, #message a { box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); }
-      #load { color: rgba(0,0,0,0.4); text-align: center; font-size: 13px; }
-      @media (max-width: 600px) {
-        body, #message { margin-top: 0; background: white; box-shadow: none; }
-        body { border-top: 16px solid #ffa100; }
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <style type="text/css">
+    .bs-component + .bs-component {
+      margin-top: 1rem;
+    }
+    @media (min-width: 768px) {
+      .bs-docs-section {
+        margin-top: 8em;
       }
+      .bs-component {
+        position: relative;
+      }
+      .bs-component .modal {
+        position: relative;
+        top: auto;
+        right: auto;
+        bottom: auto;
+        left: auto;
+        z-index: 1;
+        display: block;
+      }
+      .bs-component .modal-dialog {
+        width: 90%;
+      }
+      .bs-component .popover {
+        position: relative;
+        display: inline-block;
+        width: 220px;
+        margin: 20px;
+      }
+      .nav-tabs {
+        margin-bottom: 15px;
+      }
+      .progress {
+        margin-bottom: 10px;
+      }
+    }
     </style>
   </head>
   <body>
-    <div id="message">
-      <h2>Welcome</h2>
-      <h1>Firebase Hosting Setup Complete</h1>
-      <p>You're seeing this because you've successfully setup Firebase Hosting. Now it's time to go build something extraordinary!</p>
-      <a target="_blank" href="https://firebase.google.com/docs/hosting/">Open Hosting Documentation</a>
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+          <a class="navbar-brand" href="./">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAABR5JREFUeNrsV3tMW1UYP5e+KYWW8RiPQXnMRRBFHrpoYCxZ1M04mI5kvuLi/EdczCDOzLCFZYsGJ44susW4bGo2k8WRKYsrA9mAIREHDMajUksLlEJXKLS0lHt7e9vrOZe23hYGKrK/9iUn97zu97vfd37fd74LwEN5QIKtVoH8TIMUPjK945GS51rgg2atF3j7bgd+V1daaEZ97j9QLIePCtSFbZbUqd+ZqHzP5F2nSSI7ODikMVYiBmacAK4Tl6vGPiw+6FnmwNaUIgsDEzY7MHW274Pj82ghKAAAW8Ka7h2bEvZWbMsp2JIcW8iLld+Kfr8yygfscmEItCQrHexJ2wiCROJ3pTvekLM9itbQHjeBC73v/W0xTX8rP10vp52OfaMHdt7wzBbJZRLpW9mbmEFalAxM2fFHlUGZjXDveZpy1sLmU4FTFHgqPlbcvmVntUVx8RW2yxkIJ8n39n0WE9qBCtrtisT4Qqj0ekviF4qtyOjc+Cg/15dsTgeREnEGwLBqasb4o3tu1qfsknII5G+IASGyiKK4w1+/uPjgaMwPGLlUmJyeRE0by9E4d8P6/BCR8CbsHrCTTr9XW7QGEBmy4DF7x80+TBhMsS3uN82A/IQYwJGuOwqn+PfjDgPsnJqIdBPzJ3kRMWXwzOzKyRnw6fbNoDgjJaxDPwVGzDbfC7szkoGYxwOO4cFRi+L7T4IEIoqtsF47BnJiokBEeERW3JGzJcsCj1fsVePKzjIILsE4HLGdpHwg6APYAs8YdOgngelC1XE4HAxUON/T1ohcXvhIEuBFxx/193SAq5EIUx97HONyg71jpZEJNyDmcwEkGGDPkxPDRuc9XUMgeZDM/vLDSc2M2SrickHKuvAQP1zKuZhcYx+9egiyOc/e0XQajRUqHfBazpaBSTNyczfsGhcCxj8HOYb/mKEs0+WXlGoYXqlgWVd7hITttjh3a1xatIxxMbKWLeisW7QTAO/97WfP/kXASKe+/PWvTBZzR6dhkmH5UsINSG3V0K2ZH+RlLgLshCRTqEaB5dqF5vm+9isrJDzKPW+ruKUzKMqefuL+wIlf1u2CD0ZZMLSyqrXH70xpB04RQ/16fOB2nbW5tgpOG9hKUBhpzFY/xfrDb15PqLpyGRKtOFUWyqRTNrkY4NH925HrXpAVvp3VRtjDaIoSMF7k8oj5nl91TqNe42HwOGwuNgCMBOvokHHslHoQg25HZPMGPm3vbC7tHQyNvEsSDDsJzYBtudspcI5ewa2IJ1LPPjfKK8jVrHURi0to3uEDSThRk4MJRacexD0M+XFs6uzx+gVycblhcTLpM0Ubk9YU9MydfgATldh3xvBOHTHjDpACSbBWgsjnmpudm2ur6/PF8dihPVqcdPR1wLhbC0Gs/0k9DAhVjwJFJzuB0C7b7MHaP0eYSuH/BkV6R4dUuqlzHx/xsp7j3WC9UaMVPJln7bVTzyeGSUC4SLBqUGTEN30qoNRqDKaL1a9R0/e6Aasm8omt5ervguwCS5d5Ls/scPLDhQIgEfD/E+A1jQ7UqLTA2NVaZ6jcj0DvrFhlhm7bnRKa/9IxjjRiF2S7KFUaClDBhj4E1U6BMkM4GDCNeRYMWaxgfHqadBrHuqxNtdVz7Q0oOeH/prxFa1HrSz9/GV6Xz8KPyAniC2OCxJJF1KdJB0lZTAa3zaJ2miZaTd99dtWT6YjV1tWYp4xBqQ8Bi1kXDLqlUCq0eLKW6+HvylLylwADAGHRRZ5BjyTvAAAAAElFTkSuQmCC" width="30" height="30" class="d-inline-block align-top mr-1" alt="Honoka">
+            N高生証明bot
+          </a>    
+        </div>
+      </nav>
+    </header>
+    <div class="container">
+    
+      <div class="row my-2"></div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="page-header">
+          </div>
+          <div class="bs-component">
+            <div class="jumbotron">
+              <h1 class="display-6">N高生証明bot</h1>
+              <p class="lead">Googleアカウントを使って、TwitterアカウントがN高等学校の生徒のものであることを証明し、そのことをN高生証明botに発言させられます。</p>
+              <p class="lead">
+                <a class="btn btn-primary btn-lg btn-block" href="#" role="button">nnn.ed.jpドメインの<br>Googleアカウントでログイン</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card border-dark mb-3">
+          <div class="card-header">
+            以下のサービス利用規約に同意し、証明ツイートを<a href="https://twitter.com/n_high_auth_bot">N高生証明bot</a>に発言させられます。</div>
+          <div class="card-body">
+            <h4 class="card-title">証明ツイートの内容</h4>
+            <p class="card-text">sifue/吉村総一郎 <a href="https://twitter.com/intent/user?user_id=13329002">https://twitter.com/intent/user?user_id=13329002</a>
+              がN高等学校の生徒であることが証明されました。 
+              新規証明ツイートの発行はこちら→ <a href="https://n-high-auth.firebaseapp.com/">https://n-high-auth.firebaseapp.com/</a>
+            </p>
+          </div>
+      </div>
+
+      <p class="bs-component">
+          <button type="button" class="btn btn-primary btn-lg btn-block">証明ツイートをbotに発言させる</button>
+      </p>
+
+
+      <div class="page-header">
+          <div class="row my-3"></div>
+          <div class="row">
+            <div class="col-lg-4">
+                <div class="bs-component">
+                  <small>
+                  <h5>サービス利用規約</h5>
+                  <p>この利用規約は、運営者である吉村総一郎(<a href="https://twitter.com/sifue">@sifue</a>)が本サイト上で提供する本サービスの利用条件を定めるものです。</p>
+                  <p>・(プライバシー) 本サービスを提供するにあたり運営者は、必要となる最小限の情報をユーザーから取得します。運営者はユーザーから取得したプライバシー情報の保護に最大限の注意を払います。</p>
+                  <p>・(免責事項) 運営者は、本サービスがユーザーの皆様に役立つよう最大限の努力を行いますが、本サービスの内容において、欠陥、一時停止、一部削除、変更、終了及びそれらが原因で発生したユーザーまたは他者の損害に対し、故意または重大な過失があるときを除き、一切責任を負いません。</p>
+                  <p>・(規約・サービスの変更等）本規約は、予告なしに変更されることがあります。ユーザーの皆様に個別通知することは致しかねますので、ご利用の際には、随時、最新の利用規約を参照ください。</p>
+                  <p>・(運営者への連絡) 証明情報を破棄、消去等の要望に関してはTwitter上のアカウント(<a href="https://twitter.com/sifue">@sifue</a>)まで問い合わせください。</p>
+                  </small>
+                </div>
+            </div>
+          </div>
+      </div>
+      
+
     </div>
-    <p id="load">Firebase SDK Loading&hellip;</p>
-
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-        // // The Firebase SDK is initialized and available here!
-        //
-        // firebase.auth().onAuthStateChanged(user => { });
-        // firebase.database().ref('/path/to/ref').on('value', snapshot => { });
-        // firebase.messaging().requestPermission().then(() => { });
-        // firebase.storage().ref('/path/to/ref').getDownloadURL().then(() => { });
-        //
-        // // 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥
-
-        try {
-          let app = firebase.app();
-          let features = ['auth', 'database', 'messaging', 'storage'].filter(feature => typeof app[feature] === 'function');
-          document.getElementById('load').innerHTML = `Firebase SDK loaded with ${features.join(', ')}`;
-        } catch (e) {
-          console.error(e);
-          document.getElementById('load').innerHTML = 'Error loading the Firebase SDK, check the console.';
-        }
-
-        const googleProvider = new firebase.auth.GoogleAuthProvider();
-        firebase.auth().signInWithPopup(googleProvider).then(function(result) {
-          // This gives you a Google Access Token. You can use it to access the Google API.
-          const token = result.credential.accessToken;
-          // The signed-in user info.
-          const user = result.user;
-          console.log(user);
-
-          const twitterProvider = new firebase.auth.TwitterAuthProvider();
-          firebase.auth().signInWithPopup(twitterProvider).then(function(result) {
-            // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
-            // You can use these server side with your app's credentials to access the Twitter API.
-            const token = result.credential.accessToken;
-            const secret = result.credential.secret;
-            // The signed-in user info.
-            const user = result.user;
-            console.log(user);
-            // ...
-          }).catch(function(error) {
-            // Handle Errors here.
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            // The email of the user's account used.
-            const email = error.email;
-            // The firebase.auth.AuthCredential type that was used.
-            const credential = error.credential;
-            // ...
-          });
-
-          // ...
-        }).catch(function(error) {
-          // Handle Errors here.
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          // The email of the user's account used.
-          const email = error.email;
-          // The firebase.auth.AuthCredential type that was used.
-          const credential = error.credential;
-          // ...
-        });
-      });
-    </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/main.js"></script>
   </body>
 </html>
