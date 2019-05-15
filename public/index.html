@@ -67,6 +67,17 @@
     </header>
     <div class="container">
     
+      <div class="row" id="alert-not-nnn" style="display: none;">
+        <div class="col-lg-12">
+            <div class="bs-component">
+              <div class="alert alert-dismissible alert-danger">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <strong>ログイン失敗！</strong> N高等学校から配布されているnnn.ed.jpドメインのGoogleアカウントでログインください。
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="row my-2"></div>
       <div class="row">
         <div class="col-lg-12">
@@ -75,9 +86,9 @@
           <div class="bs-component">
             <div class="jumbotron">
               <h1 class="display-6">N高生証明bot</h1>
-              <p class="lead">Googleアカウントを使って、TwitterアカウントがN高等学校の生徒のものであることを証明し、そのことをN高生証明botに発言させられます。</p>
+              <p class="lead">TwitterアカウントがN高等学校の生徒のものであることをGoogleアカウントを使って証明します。</p>
               <p class="lead">
-                <a class="btn btn-primary btn-lg btn-block" href="#" role="button">nnn.ed.jpドメインの<br>Googleアカウントでログイン</a>
+                <button type="button" class="btn btn-primary btn-lg btn-block" id="login-logout" disabled>読み込み中...</button>
               </p>
             </div>
           </div>
@@ -86,10 +97,10 @@
 
       <div class="card border-dark mb-3">
           <div class="card-header">
-            以下のサービス利用規約に同意し、証明ツイートを<a href="https://twitter.com/n_high_auth_bot">N高生証明bot</a>に発言させられます。</div>
+            以下のサービス利用規約に同意し、証明ツイートを<a href="https://twitter.com/n_high_auth_bot">N高生証明bot</a>にさせます。</div>
           <div class="card-body">
             <h4 class="card-title">証明ツイートの内容</h4>
-            <p class="card-text">sifue/吉村総一郎 <a href="https://twitter.com/intent/user?user_id=13329002">https://twitter.com/intent/user?user_id=13329002</a>
+            <p class="card-text">sifue/吉村総一郎 <a href="https://twitter.com/sifue">sifue</a>
               がN高等学校の生徒であることが証明されました。 
               新規証明ツイートの発行はこちら→ <a href="https://n-high-auth.firebaseapp.com/">https://n-high-auth.firebaseapp.com/</a>
             </p>
@@ -97,14 +108,13 @@
       </div>
 
       <p class="bs-component">
-          <button type="button" class="btn btn-primary btn-lg btn-block">証明ツイートをbotに発言させる</button>
+          <button type="button" class="btn btn-primary btn-lg btn-block" id="tweet" disabled>証明ツイートする</button>
       </p>
-
 
       <div class="page-header">
           <div class="row my-3"></div>
           <div class="row">
-            <div class="col-lg-4">
+            <div class="col-lg-12">
                 <div class="bs-component">
                   <small>
                   <h5>サービス利用規約</h5>
