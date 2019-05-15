@@ -2,7 +2,7 @@
 
 function toggleSignIn() {
   if (!firebase.auth().currentUser) {
-    var provider = new firebase.auth.GoogleAuthProvider();
+    const provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithRedirect(provider);
   } else {
     firebase.auth().signOut();
@@ -21,14 +21,20 @@ function initApp() {
     console.error(error);
   });
 
-  firebase.auth().onAuthStateChanged(function(user) { // 通常時の処理
+  firebase.auth().onAuthStateChanged(function(user) { // 通常時の処理 (Google認証の後もTwitter認証の後も来る)
     if (user) {
       const email = user.email;
       const emailVerified = user.emailVerified;
-      if (emailVerified && /.*@nnn.ed.jp$/.test(email)) {
+      if (emailVerified && /.*@nnn.ed.jp$/.test(email)) { // リダイレクト後、Googleの nnn.ed.jp ログイン時
         console.log('User is signed in.');
         document.getElementById('login-logout').innerText = `${email}からログアウト`;
-        createTweetableCondition(user);
+        sessionStorage.setItem('googleUser', JSON.stringify(user));
+
+        const twitterProvider = new firebase.auth.TwitterAuthProvider();
+        firebase.auth().signInWithRedirect(twitterProvider); // リダイレクト
+
+      } else if (user.providerData[0].providerId === 'twitter.com') { // リダイレクト後、Twitter ログイン時
+        createTweetableCondition(user)
       } else {
         // もしnnn.ed.jpドメインでなければメッセージ
         console.log('User is not nnn.ed.jp domain.');
@@ -46,7 +52,26 @@ function initApp() {
   document.getElementById('login-logout').addEventListener('click', toggleSignIn, false);
 }
 
-function createTweetableCondition(googleUser) {
+
+function createTweetableCondition(twitterUser) {
+  console.log("createTweetableCondition");
+  const googleUser = JSON.parse(sessionStorage.getItem('googleUser'));
+
+  if (!googleUser) { // セッションストレージからGoogleユーザーがとれなかったら、サインアウトしてやり直し
+    firebase.auth().signOut();
+    document.getElementById('login-logout').innerHTML = 'nnn.ed.jpドメインの<br>Googleアカウントでログイン';
+    return;
+  }
+  
+  document.getElementById('login-logout').innerText = `${googleUser.email}からログアウト`;
+  console.log(googleUser);
+  console.log(twitterUser);
+
+  // TODO functionsでツイートできるのかチェック
+
+  // TODO ツイートできない場合の処理
+  // TODO ツイートさせる処理
+
 
 }
 
