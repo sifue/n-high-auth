@@ -32,8 +32,7 @@ function initApp() {
 
         const createGoogleUserJWT = firebase.functions().httpsCallable('createGoogleUserJWT');
         createGoogleUserJWT().then((result) => {
-          console.log(result);
-          sessionStorage.setItem('googleUser', JSON.stringify(result));
+          sessionStorage.setItem('googleUser', JSON.stringify(result.data));
 
           // Twitter認証を開始
           const twitterProvider = new firebase.auth.TwitterAuthProvider();
