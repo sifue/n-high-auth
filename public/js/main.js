@@ -13,8 +13,6 @@ function toggleSignIn() {
 
 function initApp() {
 
-  // firebase.functions().useFunctionsEmulator('http://localhost:5000');
-
   $('.bs-component [data-toggle="popover"]').popover();
   $('.bs-component [data-toggle="tooltip"]').tooltip();
 
@@ -32,15 +30,14 @@ function initApp() {
         console.log('User is signed in.');
         document.getElementById('login-logout').innerText = `${email}からログアウト`;
 
-        // TODO サーバーで作られたJWTをセッションストレージに保存
         const createGoogleUserJWT = firebase.functions().httpsCallable('createGoogleUserJWT');
-        createGoogleUserJWT({text : 'hoge'}).then((result) => {
+        createGoogleUserJWT().then((result) => {
           console.log(result);
-          sessionStorage.setItem('googleUser', JSON.stringify(user));
+          sessionStorage.setItem('googleUser', JSON.stringify(result));
 
-          // // Twitter認証を開始
-          // const twitterProvider = new firebase.auth.TwitterAuthProvider();
-          // firebase.auth().signInWithRedirect(twitterProvider); // リダイレクト
+          // Twitter認証を開始
+          const twitterProvider = new firebase.auth.TwitterAuthProvider();
+          firebase.auth().signInWithRedirect(twitterProvider); // リダイレクト
         }).catch((e) => console.error(e));
 
       } else if (user.providerData[0].providerId === 'twitter.com') { // リダイレクト後、Twitter ログイン時

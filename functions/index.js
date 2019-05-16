@@ -1,4 +1,5 @@
 const functions = require('firebase-functions');
+const jwt = require('jsonwebtoken');
 
 // Create and Deploy Your First Cloud Functions
 // https://firebase.google.com/docs/functions/write-firebase-functions
@@ -7,8 +8,12 @@ const functions = require('firebase-functions');
 //  response.send("Hello from Firebase!");
 // });
 
+const secret = functions.config().nhighauth.secret;
+
 exports.createGoogleUserJWT = functions.https.onCall((data, context) => {
-  const text = data.text;
   const user = context.auth;
-  return { ok: 'ok' , text: text, user: user};
+  const email = context.auth.token.email;
+  console.log(user);
+  const token = jwt.sign(user, secret);
+  return {token: token, email : email};
 });
