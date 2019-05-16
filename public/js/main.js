@@ -12,6 +12,9 @@ function toggleSignIn() {
 }
 
 function initApp() {
+
+  // firebase.functions().useFunctionsEmulator('http://localhost:5000');
+
   $('.bs-component [data-toggle="popover"]').popover();
   $('.bs-component [data-toggle="tooltip"]').tooltip();
 
@@ -28,10 +31,17 @@ function initApp() {
       if (emailVerified && /.*@nnn.ed.jp$/.test(email)) { // リダイレクト後、Googleの nnn.ed.jp ログイン時
         console.log('User is signed in.');
         document.getElementById('login-logout').innerText = `${email}からログアウト`;
-        sessionStorage.setItem('googleUser', JSON.stringify(user));
 
-        const twitterProvider = new firebase.auth.TwitterAuthProvider();
-        firebase.auth().signInWithRedirect(twitterProvider); // リダイレクト
+        // TODO サーバーで作られたJWTをセッションストレージに保存
+        const createGoogleUserJWT = firebase.functions().httpsCallable('createGoogleUserJWT');
+        createGoogleUserJWT({text : 'hoge'}).then((result) => {
+          console.log(result);
+          sessionStorage.setItem('googleUser', JSON.stringify(user));
+
+          // // Twitter認証を開始
+          // const twitterProvider = new firebase.auth.TwitterAuthProvider();
+          // firebase.auth().signInWithRedirect(twitterProvider); // リダイレクト
+        }).catch((e) => console.error(e));
 
       } else if (user.providerData[0].providerId === 'twitter.com') { // リダイレクト後、Twitter ログイン時
         createTweetableCondition(user)
