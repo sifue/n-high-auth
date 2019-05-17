@@ -34,7 +34,6 @@ firebase deploy --only functions:checkTweetable
 
 などを使う。あとはコードを修正する。SPAとしての遷移が多いので、ブレークポイントやconsole.logを多用してデバッグが必要。あと変数がconstからvarに変更になったのは、モバイルSafari対応のため。
 
-
 ### Datastore ルール
 
 コンテンツ所有者のみがDatastoreを読み書きできるように変更。コンソール上でこれを設定しないとだれでもDatastoreを変更できてしまう。
@@ -53,3 +52,7 @@ service cloud.firestore {
 ### LICENSE
 
 ISC license
+
+### Copyright
+Copyright © 2019- Soichiro Yoshimura All Rights Reserved.
+
