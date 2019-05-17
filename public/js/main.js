@@ -1,12 +1,26 @@
 'use strict';
 
+const defaultTweetHTML = 
+'【アカウント名】(<a href="#">@【ユーザー名】</a>)が現在、' +
+ 'N高等学校の生徒であることが証明されました。<br>' + 
+ '新規証明ツイートの発行はこちら→ ' + 
+ '<a href="https://n-high-auth.firebaseapp.com/">' + 
+ 'https://n-high-auth.firebaseapp.com/</a>';
+
+function signOutWithDOMReset() {
+  firebase.auth().signOut();
+    document.getElementById('tweet-text').innerHTML = defaultTweetHTML;
+    document.getElementById('tweet').innerText = '証明ツイートをする';
+    document.getElementById('tweet').disabled = true;
+    document.getElementById('login-logout').innerHTML = 'nnn.ed.jpドメインの<br>Googleアカウントでログイン';
+}
+
 function toggleSignIn() {
   if (!firebase.auth().currentUser) {
     const provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithRedirect(provider);
   } else {
-    firebase.auth().signOut();
-    document.getElementById('login-logout').innerHTML = 'nnn.ed.jpドメインの<br>Googleアカウントでログイン';
+    signOutWithDOMReset();
   }
   document.getElementById('login-logout').disabled = true;
 }
@@ -29,6 +43,7 @@ function initApp() {
       if (emailVerified && /.*@nnn.ed.jp$/.test(email)) { // リダイレクト後、Googleの nnn.ed.jp ログイン時
         console.log('User is signed in.');
         document.getElementById('login-logout').innerHTML = `${email}から<br>ログアウト`;
+        document.getElementById('tweet').innerText = '読み込み中...';
 
         const createGoogleUserJWT = firebase.functions().httpsCallable('createGoogleUserJWT');
         createGoogleUserJWT().then((result) => {
@@ -45,13 +60,11 @@ function initApp() {
         // もしnnn.ed.jpドメインでなければメッセージ
         console.log('User is not nnn.ed.jp domain.');
         document.getElementById('alert-not-nnn').style.display = 'block';
-        firebase.auth().signOut();
-        document.getElementById('login-logout').innerHTML = 'nnn.ed.jpドメインの<br>Googleアカウントでログイン';
+        signOutWithDOMReset();
       }
     } else {
       console.log('User is signed out.');
-      firebase.auth().signOut();
-      document.getElementById('login-logout').innerHTML = 'nnn.ed.jpドメインの<br>Googleアカウントでログイン';
+      signOutWithDOMReset();
     }
     document.getElementById('login-logout').disabled = false;
   });
@@ -67,8 +80,8 @@ function createTweetableCondition(twitterUser) {
   const googleUser = JSON.parse(sessionStorage.getItem('googleUser'));
 
   if (!googleUser) { // セッションストレージからGoogleユーザーがとれなかったら、サインアウトしてやり直し
-    firebase.auth().signOut();
-    document.getElementById('login-logout').innerHTML = 'nnn.ed.jpドメインの<br>Googleアカウントでログイン';
+    console.log("Can't restore googleUser."); 
+    signOutWithDOMReset();
     return;
   }
   
@@ -86,7 +99,7 @@ function createTweetableCondition(twitterUser) {
 
       if (displayName && screenName) {
         const tweetTextHTML = 
-        `${displayName} <a href="https://twitter.com/${screenName}">@${screenName}</a> が` +
+        `${displayName}(<a href="https://twitter.com/${screenName}">@${screenName}</a>)が` +
         '現在、N高等学校の生徒であることが証明されました。<br>新規証明ツイートの発行はこちら→ ' +
         '<a href="https://n-high-auth.firebaseapp.com/">https://n-high-auth.firebaseapp.com/</a>';
         document.getElementById('tweet-text').innerHTML = tweetTextHTML;
