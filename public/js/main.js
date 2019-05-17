@@ -93,13 +93,14 @@ function createTweetableCondition(twitterUser) {
   const pCheckTweetable = checkTweetable({
     googleUser : googleUser,
     twitterUID : twitterUID}).then((result) => {
+      const key = result.data.key;
       const tweetable = result.data.tweetable;
       const displayName = result.data.displayName;
       const screenName = result.data.screenName;
 
       if (displayName && screenName) {
         const tweetTextHTML = 
-        `${displayName}(<a href="https://twitter.com/${screenName}">@${screenName}</a>)が` +
+        `${displayName} (<a href="https://twitter.com/${screenName}">@${screenName}</a>)が` +
         '現在、N高等学校の生徒であることが証明されました。<br>新規証明ツイートの発行はこちら→ ' +
         '<a href="https://n-high-auth.firebaseapp.com/">https://n-high-auth.firebaseapp.com/</a>';
         document.getElementById('tweet-text').innerHTML = tweetTextHTML;
@@ -110,10 +111,11 @@ function createTweetableCondition(twitterUser) {
         console.log("Tweatable."); 
         tweetButton.innerText = '証明ツイートをする';
         tweetButton.disabled = false;
+        tweetButton.dataset.key = key;
+        tweetButton.addEventListener('click', executePostVerificationTweet, false);
       } else {
         console.log("Not tweatable."); 
         const reason = result.data.reason;
-        // TODO reasonごとでメッセージを分岐
 
         if (reason === 'INVALID_EMAIL') {
           document.getElementById('alert-tweetable-auth').style.display = 'block';
@@ -126,10 +128,27 @@ function createTweetableCondition(twitterUser) {
       }
   }).catch((e) => {
     document.getElementById('alert-tweetable-error').style.display = 'block';
-    console.error(e)
+    console.error(e);
   });
+}
 
-  // TODO ツイートさせる処理
+function executePostVerificationTweet() {
+  const googleUser = JSON.parse(sessionStorage.getItem('googleUser'));
+  const tweetButton = document.getElementById('tweet');
+  const key = tweetButton.dataset.key;
+
+  const postVerificationTweet = firebase.functions().httpsCallable('postVerificationTweet');
+  const pPostVerificationTweet = postVerificationTweet({
+    googleUser : googleUser,
+    key : key}).then((result) => {
+    
+      // TODO URLを載せる
+      console.log(result);
+      
+  }).catch((e) => {
+    document.getElementById('alert-tweetable-error').style.display = 'block';
+    console.error(e);
+  });
 }
 
 document.addEventListener('DOMContentLoaded', function() {

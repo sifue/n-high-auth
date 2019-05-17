@@ -72,6 +72,7 @@ exports.checkTweetable = functions.https.onCall((data, context) => {
         return relationRef.set(relation).then(() => {
           return { 
                 tweetable : true,
+                key : key,
                 displayName : twitterUser.token.name,
                 screenName : screenName,
                 reason : 'RELATION_CREATED'
@@ -84,6 +85,7 @@ exports.checkTweetable = functions.https.onCall((data, context) => {
           if (lastTweetedAt < Date.now() - (24 * 60 * 60 * 1000)) { 
             return { 
               tweetable : true,
+              key : key,
               displayName : twitterUser.token.name,
               screenName : screenName,
               reason : 'OVER_24_HOURS'
@@ -91,6 +93,7 @@ exports.checkTweetable = functions.https.onCall((data, context) => {
           } else {
             return { 
               tweetable : false,
+              key : key,
               displayName : twitterUser.token.name,
               screenName : screenName,
               reason : 'IN_24_HOURS'
@@ -99,6 +102,7 @@ exports.checkTweetable = functions.https.onCall((data, context) => {
         } else {
           return { 
             tweetable : true,
+            key : key,
             displayName : twitterUser.token.name,
             screenName : screenName,
             reason : 'NOT_TWEETED'
@@ -108,4 +112,61 @@ exports.checkTweetable = functions.https.onCall((data, context) => {
     });
   });
   return pResult;
+});
+
+exports.postVerificationTweet = functions.https.onCall((data, context) => {
+  const twitterUser = context.auth;
+  console.log(twitterUser);
+
+  const googleUserToken = data.googleUser.token;
+  const googleUser = jwt.verify(googleUserToken, secret);
+  const googleEmailParam = data.googleUser.email;
+  // JWTを復号した後のemailが違う場合やnnn.ed.jpじゃない場合は失敗
+  if(googleUser.token.email !== googleEmailParam || !(/.*@nnn.ed.jp$/.test(googleEmailParam))) {
+    return { 
+      posted : false,
+      reason : 'INVALID_EMAIL'
+    }
+  }
+
+  const key = data.key;
+  if(!key) {
+    return { 
+      posted : false,
+      reason : 'KEY_NOT_FOUND'
+    }
+  }
+
+  const relationRef = db.collection("google_twitter_relations").doc(key);
+  return relationRef.get().then(doc => {
+    if (doc.exists) { // keyで定義される関連があれば、投稿とフォロー
+      const twitterDisplayName = doc.data().twitterDisplayName;
+      const twitterScreenName = doc.data().twitterScreenName;
+      const twitterUID = doc.data().twitterUID;
+      const message = 
+        `${twitterDisplayName} (@${twitterScreenName})が` +
+        '現在、N高等学校の生徒であることが証明されました。\n新規証明ツイートの発行はこちら→ ' +
+        'https://n-high-auth.firebaseapp.com/';
+      return client.post('statuses/update', {status: message})
+      .then((tweet) => {
+        const pStoreAndFollow = relationRef.set({
+          lastTweetedAt: admin.firestore.FieldValue.serverTimestamp(),
+        }, { merge: true }).then(() => {
+          return client.post('friendships/create', {user_id: twitterUID, follow : true})
+        });
+        return pStoreAndFollow.then(() => {
+          return {
+            posted : true,
+            tweet : tweet,
+            reason : 'STORED_TIMESTAMP_AND_FOLLOW'
+          };
+        });
+      });
+    } else { // そもそも関係がないのであれば失敗
+      return { 
+        posted : false,
+        reason : 'NOT_RELATION'
+      }
+    }
+  });
 });
