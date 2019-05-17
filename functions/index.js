@@ -144,15 +144,15 @@ exports.postVerificationTweet = functions.https.onCall((data, context) => {
       const twitterScreenName = doc.data().twitterScreenName;
       const twitterUID = doc.data().twitterUID;
       const message = 
-        `${twitterDisplayName} (@${twitterScreenName})が` +
+        `${twitterDisplayName} (@${twitterScreenName}) が` +
         '現在、N高等学校の生徒であることが証明されました。\n新規証明ツイートの発行はこちら→ ' +
         'https://n-high-auth.firebaseapp.com/';
-      return client.post('statuses/update', {status: message})
+      return twitterClient.post('statuses/update', {status: message})
       .then((tweet) => {
         const pStoreAndFollow = relationRef.set({
           lastTweetedAt: admin.firestore.FieldValue.serverTimestamp(),
         }, { merge: true }).then(() => {
-          return client.post('friendships/create', {user_id: twitterUID, follow : true})
+          return twitterClient.post('friendships/create', {user_id: twitterUID, follow : true})
         });
         return pStoreAndFollow.then(() => {
           return {

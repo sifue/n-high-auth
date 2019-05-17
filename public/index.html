@@ -8,7 +8,7 @@
     <meta name="twitter:site" content="@n_high_auth_bot" />
     <meta property="og:url" content="https://n-high-auth.firebaseapp.com" />
     <meta property="og:title" content="N高生証明bot" />
-    <meta property="og:description" content="ログインしているTwitterアカウントがN高等学校の生徒のものであることをGoogleアカウントを使って証明します。" />
+    <meta property="og:description" content="ログインしているTwitterアカウントが、N高等学校の生徒のものであることをGoogleアカウントを使って証明します。" />
     <meta property="og:image" content="https://n-high-auth.firebaseapp.com/logo.png" />
 
     <!-- update the version number as needed -->
@@ -93,7 +93,7 @@
           <div class="bs-component">
             <div class="jumbotron">
               <h1 class="display-6">N高生証明bot</h1>
-              <p class="lead">ログインしているTwitterアカウントがN高等学校の生徒のものであることをGoogleアカウントを使って証明します。</p>
+              <p class="lead">ログインしているTwitterアカウントが、N高等学校の生徒のものであることをGoogleアカウントを使って証明します。</p>
               <p class="lead">
                 <button type="button" class="btn btn-primary btn-lg btn-block" id="login-logout" disabled>読み込み中...</button>
               </p>
@@ -106,23 +106,22 @@
           <div class="card-header">
             <h6>サービス利用規約に同意し、以下の証明ツイートを<a href="https://twitter.com/n_high_auth_bot">N高生証明bot</a>にさせることができます。</h6></div>
           <div class="card-body">
-            <p class="card-text" id="tweet-text">【アカウント名】(<a href="#">@【ユーザー名】</a>)
-              が現在、N高等学校の生徒であることが証明されました。<br>
+            <p class="card-text" id="tweet-text">【アカウント名】(<a href="#">@【ユーザー名】</a>) が現在、N高等学校の生徒であることが証明されました。<br>
               新規証明ツイートの発行はこちら→ <a href="https://n-high-auth.firebaseapp.com/">https://n-high-auth.firebaseapp.com/</a>
             </p>
           </div>
       </div>
 
-      <div class="row" id="alert-tweetable-error" style="display: none;">
-        <div class="col-lg-12">
-            <div class="bs-component">
-              <div class="alert alert-dismissible alert-danger">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                <strong>ツイートできません！</strong><br>エラーが発生しています。ご迷惑をおかけします。
+        <div class="row" id="alert-tweetable-error" style="display: none;">
+          <div class="col-lg-12">
+              <div class="bs-component">
+                <div class="alert alert-dismissible alert-danger">
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                  <strong>エラーが発生しました！</strong><br>不具合でご迷惑をおかけします。
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
       <div class="row" id="alert-tweetable-auth" style="display: none;">
         <div class="col-lg-12">
@@ -145,6 +144,30 @@
           </div>
         </div>
       </div>
+
+      <div class="row" id="alert-not-tweet" style="display: none;">
+          <div class="col-lg-12">
+              <div class="bs-component">
+                <div class="alert alert-dismissible alert-danger">
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                  <strong>ツイートできません！</strong><br>不具合でご迷惑をおかけします。
+              </div>
+            </div>
+          </div>
+      </div>
+
+      <div class="row" id="info-posted" style="display: none;">
+          <div class="col-lg-12">
+              <div class="bs-component">
+                <div class="alert alert-dismissible alert-success">
+                  <button type="button" class="close" data-dismiss="alert">&times;</button>
+                  <div id="info-posted-message">
+                    <strong>ツイート完了！</strong>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
       <p class="bs-component">
           <button type="button" class="btn btn-primary btn-lg btn-block" id="tweet" disabled>証明ツイートをする</button>

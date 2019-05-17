@@ -1,7 +1,7 @@
 'use strict';
 
 const defaultTweetHTML = 
-'【アカウント名】(<a href="#">@【ユーザー名】</a>)が現在、' +
+'【アカウント名】(<a href="#">@【ユーザー名】</a>) が現在、' +
  'N高等学校の生徒であることが証明されました。<br>' + 
  '新規証明ツイートの発行はこちら→ ' + 
  '<a href="https://n-high-auth.firebaseapp.com/">' + 
@@ -100,7 +100,7 @@ function createTweetableCondition(twitterUser) {
 
       if (displayName && screenName) {
         const tweetTextHTML = 
-        `${displayName} (<a href="https://twitter.com/${screenName}">@${screenName}</a>)が` +
+        `${displayName} (<a href="https://twitter.com/${screenName}">@${screenName}</a>) が` +
         '現在、N高等学校の生徒であることが証明されました。<br>新規証明ツイートの発行はこちら→ ' +
         '<a href="https://n-high-auth.firebaseapp.com/">https://n-high-auth.firebaseapp.com/</a>';
         document.getElementById('tweet-text').innerHTML = tweetTextHTML;
@@ -138,15 +138,26 @@ function executePostVerificationTweet() {
   const key = tweetButton.dataset.key;
 
   const postVerificationTweet = firebase.functions().httpsCallable('postVerificationTweet');
-  const pPostVerificationTweet = postVerificationTweet({
+  tweetButton.innerText = '証明ツイート投稿中...';
+  tweetButton.disabled = true;
+  postVerificationTweet({
     googleUser : googleUser,
     key : key}).then((result) => {
-    
-      // TODO URLを載せる
-      console.log(result);
-      
+
+      const tweetId = result.data.tweet.id_str;
+      const tweetURL = `https://twitter.com/n_high_auth_bot/status/${tweetId}`;
+      const infoMessageHTML = 
+      `<strong>ツイート完了！</strong><br>証明ツイートは<a href="${tweetURL}">こちらのリンク</a>よりご確認ください。`;
+      document.getElementById('info-posted').style.display = 'block';
+      document.getElementById('info-posted-message').innerHTML = infoMessageHTML;
+
+      if (tweetId) {
+        document.getElementById('tweet').innerText = '証明ツイート投稿完了';
+      }
+
+      console.log('Verification tweet done.');
   }).catch((e) => {
-    document.getElementById('alert-tweetable-error').style.display = 'block';
+    document.getElementById('alert-not-tweet').style.display = 'block';
     console.error(e);
   });
 }
