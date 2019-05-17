@@ -37,3 +37,6 @@ firebase deploy --only functions:checkTweetable
 ### LICENSE
 
 ISC license
+
+### Copyright
+Copyright © 2019- Soichiro Yoshimura All Rights Reserved.
