@@ -1,6 +1,6 @@
 'use strict';
 
-const defaultTweetHTML = 
+var defaultTweetHTML = 
 '【アカウント名】(<a href="#">@【ユーザー名】</a>) が現在、' +
  'N高等学校の生徒であることが証明されました。<br>' + 
  '新規証明ツイートの発行はこちら→ ' + 
@@ -17,7 +17,7 @@ function signOutWithDOMReset() {
 
 function toggleSignIn() {
   if (!firebase.auth().currentUser) {
-    const provider = new firebase.auth.GoogleAuthProvider();
+    var provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithRedirect(provider);
   } else {
     signOutWithDOMReset();
@@ -38,19 +38,19 @@ function initApp() {
 
   firebase.auth().onAuthStateChanged(function(user) { // 通常時の処理 (Google認証の後もTwitter認証の後も来る)
     if (user) {
-      const email = user.email;
-      const emailVerified = user.emailVerified;
+      var email = user.email;
+      var emailVerified = user.emailVerified;
       if (emailVerified && /.*@nnn.ed.jp$/.test(email)) { // リダイレクト後、Googleの nnn.ed.jp ログイン時
         console.log('User is signed in.');
         document.getElementById('login-logout').innerHTML = `${email}から<br>ログアウト`;
         document.getElementById('tweet').innerText = '読み込み中...';
 
-        const createGoogleUserJWT = firebase.functions().httpsCallable('createGoogleUserJWT');
+        var createGoogleUserJWT = firebase.functions().httpsCallable('createGoogleUserJWT');
         createGoogleUserJWT().then((result) => {
           sessionStorage.setItem('googleUser', JSON.stringify(result.data));
 
           // Twitter認証を開始
-          const twitterProvider = new firebase.auth.TwitterAuthProvider();
+          var twitterProvider = new firebase.auth.TwitterAuthProvider();
           firebase.auth().signInWithRedirect(twitterProvider); // リダイレクト
         }).catch((e) => console.error(e));
 
@@ -77,7 +77,7 @@ function createTweetableCondition(twitterUser) {
   console.log("Execiting. 'createTweetableCondition'"); 
   document.getElementById('tweet').innerText = '読み込み中...';
 
-  const googleUser = JSON.parse(sessionStorage.getItem('googleUser'));
+  var googleUser = JSON.parse(sessionStorage.getItem('googleUser'));
 
   if (!googleUser) { // セッションストレージからGoogleユーザーがとれなかったら、サインアウトしてやり直し
     console.log("Can't restore googleUser."); 
@@ -86,27 +86,27 @@ function createTweetableCondition(twitterUser) {
   }
   
   document.getElementById('login-logout').innerHTML = `${googleUser.email}から<br>ログアウト`;
-  const twitterUID = twitterUser.providerData[0].uid;
+  var twitterUID = twitterUser.providerData[0].uid;
 
   // functionsでツイートできるのかチェック
-  const checkTweetable = firebase.functions().httpsCallable('checkTweetable');
-  const pCheckTweetable = checkTweetable({
+  var checkTweetable = firebase.functions().httpsCallable('checkTweetable');
+  var pCheckTweetable = checkTweetable({
     googleUser : googleUser,
     twitterUID : twitterUID}).then((result) => {
-      const key = result.data.key;
-      const tweetable = result.data.tweetable;
-      const displayName = result.data.displayName;
-      const screenName = result.data.screenName;
+      var key = result.data.key;
+      var tweetable = result.data.tweetable;
+      var displayName = result.data.displayName;
+      var screenName = result.data.screenName;
 
       if (displayName && screenName) {
-        const tweetTextHTML = 
+        var tweetTextHTML = 
         `${displayName} (<a href="https://twitter.com/${screenName}">@${screenName}</a>) が` +
         '現在、N高等学校の生徒であることが証明されました。<br>新規証明ツイートの発行はこちら→ ' +
         '<a href="https://n-high-auth.firebaseapp.com/">https://n-high-auth.firebaseapp.com/</a>';
         document.getElementById('tweet-text').innerHTML = tweetTextHTML;
       }
 
-      const tweetButton = document.getElementById('tweet');
+      var tweetButton = document.getElementById('tweet');
       if (tweetable) {
         console.log("Tweatable."); 
         tweetButton.innerText = '証明ツイートをする';
@@ -115,7 +115,7 @@ function createTweetableCondition(twitterUser) {
         tweetButton.addEventListener('click', executePostVerificationTweet, false);
       } else {
         console.log("Not tweatable."); 
-        const reason = result.data.reason;
+        var reason = result.data.reason;
 
         if (reason === 'INVALID_EMAIL') {
           document.getElementById('alert-tweetable-auth').style.display = 'block';
@@ -133,20 +133,20 @@ function createTweetableCondition(twitterUser) {
 }
 
 function executePostVerificationTweet() {
-  const googleUser = JSON.parse(sessionStorage.getItem('googleUser'));
-  const tweetButton = document.getElementById('tweet');
-  const key = tweetButton.dataset.key;
+  var googleUser = JSON.parse(sessionStorage.getItem('googleUser'));
+  var tweetButton = document.getElementById('tweet');
+  var key = tweetButton.dataset.key;
 
-  const postVerificationTweet = firebase.functions().httpsCallable('postVerificationTweet');
+  var postVerificationTweet = firebase.functions().httpsCallable('postVerificationTweet');
   tweetButton.innerText = '証明ツイート投稿中...';
   tweetButton.disabled = true;
   postVerificationTweet({
     googleUser : googleUser,
     key : key}).then((result) => {
 
-      const tweetId = result.data.tweet.id_str;
-      const tweetURL = `https://twitter.com/n_high_auth_bot/status/${tweetId}`;
-      const infoMessageHTML = 
+      var tweetId = result.data.tweet.id_str;
+      var tweetURL = `https://twitter.com/n_high_auth_bot/status/${tweetId}`;
+      var infoMessageHTML = 
       `<strong>ツイート完了！</strong><br>証明ツイートは<a href="${tweetURL}">こちらのリンク</a>よりご確認ください。`;
       document.getElementById('info-posted').style.display = 'block';
       document.getElementById('info-posted-message').innerHTML = infoMessageHTML;
