@@ -50,6 +50,7 @@ function initApp() {
       }
     } else {
       console.log('User is signed out.');
+      firebase.auth().signOut();
       document.getElementById('login-logout').innerHTML = 'nnn.ed.jpドメインの<br>Googleアカウントでログイン';
     }
     document.getElementById('login-logout').disabled = false;
@@ -60,7 +61,7 @@ function initApp() {
 
 
 function createTweetableCondition(twitterUser) {
-  console.log("createTweetableCondition");
+  console.log("createTweetableCondition");  // TODO 消す
   const googleUser = JSON.parse(sessionStorage.getItem('googleUser'));
 
   if (!googleUser) { // セッションストレージからGoogleユーザーがとれなかったら、サインアウトしてやり直し
@@ -72,8 +73,17 @@ function createTweetableCondition(twitterUser) {
   document.getElementById('login-logout').innerText = `${googleUser.email}からログアウト`;
   console.log(googleUser);
   console.log(twitterUser);
+  const twitterUID = twitterUser.providerData[0].uid;
 
-  // TODO functionsでツイートできるのかチェック
+  // functionsでツイートできるのかチェック
+  const checkTweetable = firebase.functions().httpsCallable('checkTweetable');
+  const pCheckTweetable = checkTweetable({
+    googleUser : googleUser,
+    twitterUID : twitterUID}).then((result) => {
+
+    console.log(result);
+  
+  }).catch((e) => console.error(e));
 
   // TODO ツイートできない場合の処理
   // TODO ツイートさせる処理
