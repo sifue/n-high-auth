@@ -40,7 +40,7 @@ function initApp() {
     if (user) {
       var email = user.email;
       var emailVerified = user.emailVerified;
-      if (emailVerified && /.*@nnn.ed.jp$/.test(email)) { // リダイレクト後、Googleの nnn.ed.jp ログイン時
+      if (emailVerified && email.endsWith('@nnn.ed.jp')) { // リダイレクト後、Googleの nnn.ed.jp ログイン時
         console.log('User is signed in.');
         document.getElementById('login-logout').innerHTML = `${email}から<br>ログアウト`;
         document.getElementById('tweet').innerText = '読み込み中...';

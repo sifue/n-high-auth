@@ -40,7 +40,7 @@ exports.checkTweetable = functions.https.onCall((data, context) => {
   const googleEmailParam = data.googleUser.email;
 
   // JWTを復号した後のemailが違う場合やnnn.ed.jpじゃない場合は失敗
-  if(googleUser.token.email !== googleEmailParam || !(/.*@nnn.ed.jp$/.test(googleEmailParam))) {
+  if(googleUser.token.email !== googleEmailParam || !(googleEmailParam.endsWith('@nnn.ed.jp'))) {
     return { 
       tweetable : false,
       reason : 'INVALID_EMAIL'
@@ -122,7 +122,7 @@ exports.postVerificationTweet = functions.https.onCall((data, context) => {
   const googleUser = jwt.verify(googleUserToken, secret);
   const googleEmailParam = data.googleUser.email;
   // JWTを復号した後のemailが違う場合やnnn.ed.jpじゃない場合は失敗
-  if(googleUser.token.email !== googleEmailParam || !(/.*@nnn.ed.jp$/.test(googleEmailParam))) {
+  if(googleUser.token.email !== googleEmailParam || !(googleEmailParam.endsWith('@nnn.ed.jp'))) {
     return { 
       posted : false,
       reason : 'INVALID_EMAIL'
