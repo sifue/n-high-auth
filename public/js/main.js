@@ -28,7 +28,7 @@ function initApp() {
       const emailVerified = user.emailVerified;
       if (emailVerified && /.*@nnn.ed.jp$/.test(email)) { // リダイレクト後、Googleの nnn.ed.jp ログイン時
         console.log('User is signed in.');
-        document.getElementById('login-logout').innerText = `${email}からログアウト`;
+        document.getElementById('login-logout').innerHTML = `${email}から<br>ログアウト`;
 
         const createGoogleUserJWT = firebase.functions().httpsCallable('createGoogleUserJWT');
         createGoogleUserJWT().then((result) => {
@@ -61,8 +61,9 @@ function initApp() {
 
 
 function createTweetableCondition(twitterUser) {
-  console.log("createTweetableCondition");  // TODO 消す
-  // TODO 証明ツイートのところを読み込み中に。
+  console.log("Execiting. 'createTweetableCondition'"); 
+  document.getElementById('tweet').innerText = '読み込み中...';
+
   const googleUser = JSON.parse(sessionStorage.getItem('googleUser'));
 
   if (!googleUser) { // セッションストレージからGoogleユーザーがとれなかったら、サインアウトしてやり直し
@@ -71,9 +72,7 @@ function createTweetableCondition(twitterUser) {
     return;
   }
   
-  document.getElementById('login-logout').innerText = `${googleUser.email}からログアウト`;
-  console.log(googleUser);
-  console.log(twitterUser);
+  document.getElementById('login-logout').innerHTML = `${googleUser.email}から<br>ログアウト`;
   const twitterUID = twitterUser.providerData[0].uid;
 
   // functionsでツイートできるのかチェック
@@ -81,15 +80,43 @@ function createTweetableCondition(twitterUser) {
   const pCheckTweetable = checkTweetable({
     googleUser : googleUser,
     twitterUID : twitterUID}).then((result) => {
+      const tweetable = result.data.tweetable;
+      const displayName = result.data.displayName;
+      const screenName = result.data.screenName;
 
-    console.log(result);
-  
-  }).catch((e) => console.error(e));
+      if (displayName && screenName) {
+        const tweetTextHTML = 
+        `${displayName} <a href="https://twitter.com/${screenName}">@${screenName}</a> が` +
+        '現在、N高等学校の生徒であることが証明されました。 新規証明ツイートの発行はこちら→ ' +
+        '<a href="https://n-high-auth.firebaseapp.com/">https://n-high-auth.firebaseapp.com/</a>';
+        document.getElementById('tweet-text').innerHTML = tweetTextHTML;
+      }
 
-  // TODO ツイートできない場合の処理
+      const tweetButton = document.getElementById('tweet');
+      if (tweetable) {
+        console.log("tweatable."); 
+        tweetButton.innerText = '証明ツイートをする';
+        tweetButton.disabled = false;
+      } else {
+        console.log("not tweatable."); 
+        const reason = result.data.reason;
+        // TODO reasonごとでメッセージを分岐
+
+        if (reason === 'INVALID_EMAIL') {
+          document.getElementById('alert-tweetable-auth').style.display = 'block';
+        } else if (reason === 'IN_24_HOURS') {
+          document.getElementById('alert-tweetable-in-24h').style.display = 'block';
+        }
+
+        tweetButton.innerText = '証明ツイートはできません';
+        tweetButton.disabled = true;
+      }
+  }).catch((e) => {
+    document.getElementById('alert-tweetable-error').style.display = 'block';
+    console.error(e)
+  });
+
   // TODO ツイートさせる処理
-
-
 }
 
 document.addEventListener('DOMContentLoaded', function() {
