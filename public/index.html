@@ -11,6 +11,16 @@
     <meta property="og:description" content="ログインしているTwitterアカウントが、N高等学校の生徒のものであることをGoogleアカウントを使って証明します。" />
     <meta property="og:image" content="https://n-high-auth.firebaseapp.com/logo.png" />
 
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-140378600-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-140378600-1');
+    </script>
+
     <!-- update the version number as needed -->
     <script defer src="/__/firebase/6.0.2/firebase-app.js"></script>
     <!-- include only the Firebase features as you need -->
@@ -181,7 +191,8 @@
                   <small>
                   <h5>サービス利用規約</h5>
                   <p>この利用規約は、運営者である吉村総一郎(<a href="https://twitter.com/sifue">@sifue</a>)が本サイト上で提供する本サービスの利用条件を定めるものです。</p>
-                  <p>・(プライバシー) 本サービスを提供するにあたり運営者は、必要となる最小限の情報をユーザーから取得します。運営者はユーザーから取得したプライバシー情報の保護に最大限の注意を払います。</p>
+                  <p>・(プライバシー) 本サービスを提供するにあたり運営者は、必要となる最小限の情報をユーザーから取得します。運営者はユーザーから取得したプライバシー情報の保護に最大限の注意を払います。また本サイトではGoogleアナリティクスを利用してユーザー情報を収集いたします。
+                      Googleアナリティクスについては<a href="https://www.google.com/analytics/terms/jp.html">利用規約</a>と<a href="https://policies.google.com/privacy?hl=ja&gl=jp">ポリシー</a>のリンク先を参照ください。</p>
                   <p>・(免責事項) 運営者は、本サービスがユーザーの皆様に役立つよう最大限の努力を行いますが、本サービスの内容において、欠陥、一時停止、一部削除、変更、終了及びそれらが原因で発生したユーザーまたは他者の損害に対し、故意または重大な過失があるときを除き、一切責任を負いません。</p>
                   <p>・(規約・サービスの変更等）本規約は、予告なしに変更されることがあります。ユーザーの皆様に個別通知することは致しかねますので、ご利用の際には、随時、最新の利用規約を参照ください。</p>
                   <p>・(運営者への連絡) 証明情報を破棄、消去等の要望に関してはTwitter上のアカウント(<a href="https://twitter.com/sifue">@sifue</a>)まで問い合わせください。</p>
@@ -190,7 +201,6 @@
             </div>
           </div>
       </div>
-      
 
     </div>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
