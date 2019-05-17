@@ -36,14 +36,13 @@ firebase deploy --only functions:checkTweetable
 
 ### Datastore ルール
 
-コンテンツ所有者のみがDatastoreを読み書きできるように変更。コンソール上でこれを設定しないとだれでもDatastoreを変更できてしまう。
+functionsにおいてAdminのみがDatastoreを読み書きできるように変更。コンソール上でこれを設定しないとだれでもDatastoreを変更できてしまう。
 
 ```
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow only authenticated content owners access
-    match /google_twitter_relations/{document} {
-      allow read, write: if request.auth.uid == request.resource.data.author_uid
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
