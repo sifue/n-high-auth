@@ -87,18 +87,18 @@ function createTweetableCondition(twitterUser) {
       if (displayName && screenName) {
         const tweetTextHTML = 
         `${displayName} <a href="https://twitter.com/${screenName}">@${screenName}</a> が` +
-        '現在、N高等学校の生徒であることが証明されました。 新規証明ツイートの発行はこちら→ ' +
+        '現在、N高等学校の生徒であることが証明されました。<br>新規証明ツイートの発行はこちら→ ' +
         '<a href="https://n-high-auth.firebaseapp.com/">https://n-high-auth.firebaseapp.com/</a>';
         document.getElementById('tweet-text').innerHTML = tweetTextHTML;
       }
 
       const tweetButton = document.getElementById('tweet');
       if (tweetable) {
-        console.log("tweatable."); 
+        console.log("Tweatable."); 
         tweetButton.innerText = '証明ツイートをする';
         tweetButton.disabled = false;
       } else {
-        console.log("not tweatable."); 
+        console.log("Not tweatable."); 
         const reason = result.data.reason;
         // TODO reasonごとでメッセージを分岐
 

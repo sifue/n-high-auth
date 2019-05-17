@@ -79,7 +79,7 @@ exports.checkTweetable = functions.https.onCall((data, context) => {
         });
       } else { // ある場合は24時間以内に作成してないかを確認
         if (doc.data().lastTweetedAt) {
-          const lastTweetedAt = doc.data().lastTweetedAt.toDate().getTime;
+          const lastTweetedAt = doc.data().lastTweetedAt.toDate().getTime();
           // 24時間前よりも前ならOK
           if (lastTweetedAt < Date.now() - (24 * 60 * 60 * 1000)) { 
             return { 
