@@ -62,6 +62,7 @@ function initApp() {
 
 function createTweetableCondition(twitterUser) {
   console.log("createTweetableCondition");  // TODO 消す
+  // TODO 証明ツイートのところを読み込み中に。
   const googleUser = JSON.parse(sessionStorage.getItem('googleUser'));
 
   if (!googleUser) { // セッションストレージからGoogleユーザーがとれなかったら、サインアウトしてやり直し

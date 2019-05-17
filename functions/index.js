@@ -63,10 +63,11 @@ exports.checkTweetable = functions.https.onCall((data, context) => {
       if (!doc.exists) { // なければ作成
         const relation = {
           googleEmail : googleEmail,
-          googleName : googleUser.token.nameeName,
+          googleName : googleUser.token.name,
+          twitterUID : twitterUID,
           twitterDisplayName : twitterUser.token.name,
           twitterScreenName : screenName,
-          createdAt : firebase.firestore.FieldValue.serverTimestamp()
+          createdAt : admin.firestore.FieldValue.serverTimestamp()
         };
         return relationRef.set(relation).then(() => {
           return { 
