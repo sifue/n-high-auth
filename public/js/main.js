@@ -2,7 +2,7 @@
 
 var defaultTweetHTML = 
 '【アカウント名】(<a href="#">@【ユーザー名】</a>) が現在、' +
- 'N高等学校の生徒であることが証明されました。<br>' + 
+ 'N高等学校またはS高等学校の生徒であることが証明されました。<br>' + 
  '新規証明ツイートの発行はこちら→ ' + 
  '<a href="https://n-high-auth.firebaseapp.com/">' + 
  'https://n-high-auth.firebaseapp.com/</a>';
@@ -101,7 +101,7 @@ function createTweetableCondition(twitterUser) {
       if (displayName && screenName) {
         var tweetTextHTML = 
         `${displayName} (<a href="https://twitter.com/${screenName}">@${screenName}</a>) が` +
-        '現在、N高等学校の生徒であることが証明されました。<br>新規証明ツイートの発行はこちら→ ' +
+        '現在、N高等学校またはS高等学校の生徒であることが証明されました。<br>新規証明ツイートの発行はこちら→ ' +
         '<a href="https://n-high-auth.firebaseapp.com/">https://n-high-auth.firebaseapp.com/</a>';
         document.getElementById('tweet-text').innerHTML = tweetTextHTML;
       }

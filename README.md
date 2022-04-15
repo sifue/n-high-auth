@@ -5,6 +5,26 @@
 なおTwitterと通信するので、Firebaseの課金設定はFlameかBlazeにする必要がある。
 Blazeがおおすすめで、一日の課金額設定を [ドキュメント](https://firebase.google.com/docs/firestore/usage?hl=ja) を見ながらしておくとよい。開発程度では無料枠を超えない。
 
+### Firebaseの環境整備方法
+
+公式の[Get Started](https://firebase.google.com/docs/functions/get-started)を参照。
+
+利用サービスは
+
+- Hosting
+- Funcitons
+- Firestore
+
+GitHub Actionsは使っていない。
+
+その後
+
+```
+firebase init
+```
+
+にて適切な更新設定を行う。
+
 ### 環境変数設定
 
 ```
@@ -20,8 +40,11 @@ firebase functions:config:get
 ### デバッグ方法
 
 functionsは本番環境のものを利用する。functionsをデプロイしてローカル実行。
+firebase deploy で全デプロイをする。
 
 ```
+firebase logout
+firebase login
 firebase deploy
 firebase serve --only hosting -o 0.0.0.0
 ```
