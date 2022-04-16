@@ -1,6 +1,6 @@
 # N/S高生証明bot
 
-ログインしているTwitterアカウントが、N高等学校の生徒のものであることをGoogleアカウントを使って証明するFirebaseを利用するWebアプリケーション。
+ログインしているTwitterアカウントが、N高等学校またはS高等学校の生徒のものであることをGoogleアカウントを使って証明するFirebaseを利用するWebアプリケーション。
 
 なおTwitterと通信するので、Firebaseの課金設定はFlameかBlazeにする必要がある。
 Blazeがおおすすめで、一日の課金額設定を [ドキュメント](https://firebase.google.com/docs/firestore/usage?hl=ja) を見ながらしておくとよい。開発程度では無料枠を超えない。
